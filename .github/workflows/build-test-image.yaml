@@ -18,6 +18,9 @@ env:
 jobs:
   build-test-and-push-image:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
 
     services:
       docker:
