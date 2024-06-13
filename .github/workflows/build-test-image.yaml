@@ -53,8 +53,8 @@ jobs:
         run: |
           sleep 10
           docker ps
-      - name: Install pytest
-        run: pip install pytest grpcio-tools
+      - name: Install test requirements
+        run: pip install pytest grpcio-tools tifffile matplotlib
 
       - name: Run tests
         run: pytest -s test_image_processor.py
