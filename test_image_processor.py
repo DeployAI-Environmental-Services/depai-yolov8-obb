@@ -22,4 +22,6 @@ def test_process_image(grpc_stub):  # pylint: disable=W0621
         )
     )
     assert response.output_s3_uri is not None
+    assert response.output_s3_url is not None
     print("Output S3 URI: " + response.output_s3_uri)
+    print("Output S3 URL: " + response.output_s3_url)

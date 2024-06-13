@@ -2,12 +2,14 @@ syntax = "proto3";
 
 // Define the input message to hold the S3 URI of the input image
 message ImageRequest {
-    repeated string input_s3_uris = 1;;
+    repeated string input_s3_uris = 1;
 }
+
 
 // Define the output message to hold the S3 URI of the output image
 message ImageResponse {
     string output_s3_uri = 1;
+    string output_s3_url = 2;
 }
 
 // Define the service

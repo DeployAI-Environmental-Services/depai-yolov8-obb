@@ -82,6 +82,8 @@ def detect_yolov8_obb(list_images: List[str]):
     with open(json_file_name, "w") as json_file:  # pylint: disable=W1514
         json_file.write(json_data)
     _, output_s3_uri = upload_file(json_file_name, BUCKET_NAME, task_id)
+    object_name = os.path.join(task_id, os.path.basename(json_file_name))
+    signed_url = create_presigned_post(BUCKET_NAME, object_name, expiration=36000)
     if os.path.exists(json_file_name):
         os.remove(json_file_name)
-    return output_s3_uri
+    return output_s3_uri, signed_url

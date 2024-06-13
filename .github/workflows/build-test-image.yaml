@@ -57,7 +57,7 @@ jobs:
         run: pip install pytest grpcio-tools
 
       - name: Run tests
-        run: pytest test_image_processor.py
+        run: pytest -s test_image_processor.py
         env:
           PYTHONPATH: ${{ github.workspace }}
 

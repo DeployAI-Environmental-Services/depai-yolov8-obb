@@ -14,7 +14,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0bmodel.proto\"%\n\x0cImageRequest\x12\x15\n\rinput_s3_uris\x18\x01 \x03(\t\"&\n\rImageResponse\x12\x15\n\routput_s3_uri\x18\x01 \x01(\t2?\n\x0eImageProcessor\x12-\n\x0cProcessImage\x12\r.ImageRequest\x1a\x0e.ImageResponseb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0bmodel.proto\"%\n\x0cImageRequest\x12\x15\n\rinput_s3_uris\x18\x01 \x03(\t\"=\n\rImageResponse\x12\x15\n\routput_s3_uri\x18\x01 \x01(\t\x12\x15\n\routput_s3_url\x18\x02 \x01(\t2?\n\x0eImageProcessor\x12-\n\x0cProcessImage\x12\r.ImageRequest\x1a\x0e.ImageResponseb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -24,7 +24,7 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_IMAGEREQUEST']._serialized_start=15
   _globals['_IMAGEREQUEST']._serialized_end=52
   _globals['_IMAGERESPONSE']._serialized_start=54
-  _globals['_IMAGERESPONSE']._serialized_end=92
-  _globals['_IMAGEPROCESSOR']._serialized_start=94
-  _globals['_IMAGEPROCESSOR']._serialized_end=157
+  _globals['_IMAGERESPONSE']._serialized_end=115
+  _globals['_IMAGEPROCESSOR']._serialized_start=117
+  _globals['_IMAGEPROCESSOR']._serialized_end=180
 # @@protoc_insertion_point(module_scope)
