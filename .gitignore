@@ -61,3 +61,6 @@ docs/_build/
 *.pth
 
 data
+
+# Ignore all subfolders inside folder
+test-data/*/
