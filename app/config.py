@@ -1,5 +1,3 @@
-import os
-
 DEBUG = True
 NODATAVALUE = -1000
 CONFIDENCE = 0.25
