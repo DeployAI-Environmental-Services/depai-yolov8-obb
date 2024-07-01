@@ -1,10 +1,7 @@
 import os
-import json
 import colorsys
-from urllib.parse import urlparse
 import grpc
 import pytest
-import requests
 from matplotlib import pyplot as plt
 import matplotlib.patches as patches
 import tifffile as tiff
@@ -22,23 +19,6 @@ def generate_class_colors(num_classes):
 
 colors = generate_class_colors(18)
 normalized_colors = [(r / 255.0, g / 255.0, b / 255.0) for r, g, b in colors]
-
-
-def download_file_from_url(url, ouput_path):
-    response = requests.get(url, stream=True)  # pylint:disable=W3101
-    if response.status_code == 200:
-        with open(ouput_path, "wb") as f:
-            for chunk in response.iter_content(chunk_size=8192):
-                f.write(chunk)
-        print(f"File downloaded successfully as {ouput_path}")
-    else:
-        print(f"Failed to download file. Status code: {response.status_code}")
-
-
-def get_filename_from_url(url):
-    parsed_url = urlparse(url)
-    filename = os.path.basename(parsed_url.path)
-    return filename
 
 
 def read_annotations(file_path):
@@ -86,15 +66,6 @@ def visualize_annotations(img_path, annotation_path, output_path):
             fill=False,
         )
         ax.add_patch(polygon)
-        # ax.text(
-        #     annotation["x1"],
-        #     annotation["y1"],
-        #     f"{int(annotation['category'])}",
-        #     color="white",
-        #     bbox=dict(facecolor=colors[int(annotation["category"])], alpha=0.5),
-        # )
-
-        # Remove axes for better visualization
         ax.axis("off")
     plt.savefig(output_path)
 
@@ -110,25 +81,26 @@ def grpc_stub():
 def test_process_image(grpc_stub):  # pylint: disable=W0621
     response = grpc_stub.ProcessImage(
         model_pb2.ImageRequest(  # pylint: disable=E1101
-            input_s3_uris=[
-                "s3://MoBucket/obj-det/patch_250.tif",
-                "s3://MoBucket/obj-det/patch_420.tif",
+            input_image_paths=[
+                "/data/patch_250.tif",
+                "/data/patch_420.tif",
             ]
         )
     )
-    assert response.output_s3_uri is not None
-    assert response.output_s3_url is not None
-    print("Output S3 URI: " + response.output_s3_uri)
-    print("Output S3 URL: " + response.output_s3_url)
-    output_file_path = "test-data/output.json"
-    download_file_from_url(response.output_s3_url, output_file_path)
-    with open(output_file_path, "r") as file:  # pylint: disable=W1514
-        data = json.load(file)
-    for result in data:
-        result_url = result["result_url"]
-        fname = get_filename_from_url(result_url)
-        file_path = os.path.join("test-data", fname)
-        download_file_from_url(result_url, file_path)
-        img_path = os.path.join("test-data", fname.split(".")[0] + ".tif")
-        output_path = os.path.join("test-data", fname.split(".")[0] + ".png")
-        visualize_annotations(img_path, file_path, output_path)
+    print("THIS IS", response)
+    assert response.entries[0].processed is not None
+    assert response.entries[1].processed is not None
+    print("Output file: " + response.entries[0].result_path)
+    print("Output file: " + response.entries[1].result_path)
+    for res in response.entries:
+        result_path = res.result_path
+        print(result_path)
+        if result_path:
+            fname = os.path.basename(result_path)
+            local_result_path = os.path.join(
+                "test-data", os.path.relpath(result_path, "/data")
+            )
+            print(local_result_path)
+            img_path = os.path.join("test-data", fname.split(".")[0] + ".tif")
+            output_path = os.path.join("test-data", fname.split(".")[0] + ".png")
+            visualize_annotations(img_path, local_result_path, output_path)

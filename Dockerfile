@@ -29,11 +29,5 @@ RUN pip install --no-cache-dir --upgrade pip \
 # Set the working directory for the application
 WORKDIR /object-detection
 
-ENV ACCESS_KEY e850aff0dd5749a0a8df9f909014049c
-ENV SECRET_ACCESS_KEY 7803d10a23374d8392505e0556179b48
-ENV END_POINT https://object-store.os-api.cci1.ecmwf.int
-ENV BUCKET_NAME MoBucket
-
-
 # Set the command to run the application
 CMD ["python3", "serve.py"]

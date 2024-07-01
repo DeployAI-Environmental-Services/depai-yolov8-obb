@@ -31,8 +31,7 @@ if _version_not_supported:
 
 
 class ImageProcessorStub(object):
-    """Define the service
-    """
+    """Missing associated documentation comment in .proto file."""
 
     def __init__(self, channel):
         """Constructor.
@@ -48,8 +47,7 @@ class ImageProcessorStub(object):
 
 
 class ImageProcessorServicer(object):
-    """Define the service
-    """
+    """Missing associated documentation comment in .proto file."""
 
     def ProcessImage(self, request, context):
         """Missing associated documentation comment in .proto file."""
@@ -74,8 +72,7 @@ def add_ImageProcessorServicer_to_server(servicer, server):
 
  # This class is part of an EXPERIMENTAL API.
 class ImageProcessor(object):
-    """Define the service
-    """
+    """Missing associated documentation comment in .proto file."""
 
     @staticmethod
     def ProcessImage(request,

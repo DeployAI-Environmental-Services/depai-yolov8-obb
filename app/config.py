@@ -1,11 +1,5 @@
 import os
 
-TMP_PATH = "/tmp"
-ACCESS_KEY = os.environ.get("ACCESS_KEY")
-SECRECT_ACCESS_KEY = os.environ.get("SECRET_ACCESS_KEY")
-END_POINT = os.environ.get("END_POINT")
-BUCKET_NAME = os.environ.get("BUCKET_NAME")
-API_KEY = "PFbUcE0/kAIYuYr1Q6xUiIekq7C0qMceyNmyN/pHZVU="
 DEBUG = True
 NODATAVALUE = -1000
 CONFIDENCE = 0.25

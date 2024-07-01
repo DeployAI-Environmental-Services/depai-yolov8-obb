@@ -11,15 +11,13 @@ logging.getLogger().setLevel(logging.INFO)
 
 class ImageProcessorServicer(model_pb2_grpc.ImageProcessorServicer):
     def ProcessImage(self, request, context):
-        input_s3_uri = request.input_s3_uris
-        output_s3_uri, output_s3_url = self.run_model(input_s3_uri)
-        return model_pb2.ImageResponse(  # pylint: disable=E1101
-            output_s3_uri=output_s3_uri, output_s3_url=output_s3_url
-        )
+        input_image_paths = request.input_image_paths
+        result = self.run_model(input_image_paths)
+        return model_pb2.ImageResponse(entries=result)  # pylint: disable=E1101
 
     def run_model(self, input_s3_uri):
-        uri, url = detect_yolov8_obb(input_s3_uri)
-        return uri, url
+        result = detect_yolov8_obb(input_s3_uri)
+        return result
 
 
 def serve():

@@ -1,48 +1,34 @@
-import json
 import logging
 import os
-from typing import List
+from typing import Dict, List
 import uuid
 from ultralytics import YOLO
 from app.config import (
-    BUCKET_NAME,
     CONFIDENCE,
     STREAM,
     DICT_CLASSES,
-    TMP_PATH,
 )
-from app.utils import (
-    create_directory,
-    create_presigned_post,
-    download_file_from_bucket,
-    clean_temp_directory,
-    upload_file,
-)
+from app.utils import create_directory
 
 
-def detect_yolov8_obb(list_images: List[str]):
+def detect_yolov8_obb(list_images: List[str]) -> List[Dict]:
     task_id = str(uuid.uuid4())
     logging.info("worker_init")
     logging.info("Initialization YOLOv8")
     model = YOLO("/object-detection/app/weights/best.pt")
-    temp_path = os.path.join(TMP_PATH, task_id)
+    temp_path = os.path.join(os.path.dirname(list_images[0]), task_id)
     create_directory(temp_path)
     processing_status = []
-    for image_uri in list_images:
+    for image_path in list_images:
         list_classes = list(DICT_CLASSES.values())
         res_output = {
-            "image_uri": image_uri,
+            "image_path": image_path,
             "processed": False,
-            "result_url": None,
-            "result_uri": None,
+            "result_path": None,
         }
-        img_filename = os.path.basename(image_uri)
-        downloaded_img_path = os.path.join(temp_path, img_filename)
-        download_file_from_bucket(image_uri, downloaded_img_path)
         result = model(
-            downloaded_img_path,
+            image_path,
             classes=list_classes,
-            # imgsz=ISZ,
             conf=CONFIDENCE,
             stream=STREAM,
         )
@@ -52,38 +38,17 @@ def detect_yolov8_obb(list_images: List[str]):
             temp_path, os.path.basename(result.path).split(".tif")[0] + ".txt"
         )
         result.save_txt(res_output_path, save_conf=True)
-        try:
-            upload_file(res_output_path, BUCKET_NAME, task_id)
-            object_name = os.path.join(task_id, os.path.basename(res_output_path))
-            signed_url = create_presigned_post(
-                BUCKET_NAME, object_name, expiration=36000
-            )
-            os.remove(res_output_path)
-            os.remove(downloaded_img_path)
+        if os.path.exists(res_output_path):
             res_output = {
-                "image_uri": image_uri,
+                "image_path": image_path,
                 "processed": True,
-                "result_url": signed_url,
-                "result_uri": os.path.join("s3://" + BUCKET_NAME, object_name),
+                "result_path": res_output_path,
             }
-        except FileNotFoundError:
-            os.remove(downloaded_img_path)
+        else:
             res_output = {
-                "image_uri": image_uri,
+                "image_path": image_path,
                 "processed": True,
-                "result_url": None,
-                "result_uri": None,
+                "result_path": None,
             }
         processing_status.append(res_output)
-    clean_temp_directory(temp_path)
-    json_file_name = os.path.join(TMP_PATH, task_id + ".json")
-    json_data = json.dumps(processing_status)
-    # Write JSON data to a local file
-    with open(json_file_name, "w") as json_file:  # pylint: disable=W1514
-        json_file.write(json_data)
-    _, output_s3_uri = upload_file(json_file_name, BUCKET_NAME, task_id)
-    object_name = os.path.join(task_id, os.path.basename(json_file_name))
-    signed_url = create_presigned_post(BUCKET_NAME, object_name, expiration=36000)
-    if os.path.exists(json_file_name):
-        os.remove(json_file_name)
-    return output_s3_uri, signed_url
+    return processing_status

@@ -14,7 +14,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0bmodel.proto\"%\n\x0cImageRequest\x12\x15\n\rinput_s3_uris\x18\x01 \x03(\t\"=\n\rImageResponse\x12\x15\n\routput_s3_uri\x18\x01 \x01(\t\x12\x15\n\routput_s3_url\x18\x02 \x01(\t2?\n\x0eImageProcessor\x12-\n\x0cProcessImage\x12\r.ImageRequest\x1a\x0e.ImageResponseb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0bmodel.proto\")\n\x0cImageRequest\x12\x19\n\x11input_image_paths\x18\x01 \x03(\t\"M\n\x0f\x44ictionaryEntry\x12\x12\n\nimage_path\x18\x01 \x01(\t\x12\x11\n\tprocessed\x18\x02 \x01(\x08\x12\x13\n\x0bresult_path\x18\x03 \x01(\t\"2\n\rImageResponse\x12!\n\x07\x65ntries\x18\x01 \x03(\x0b\x32\x10.DictionaryEntry2?\n\x0eImageProcessor\x12-\n\x0cProcessImage\x12\r.ImageRequest\x1a\x0e.ImageResponseb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -22,9 +22,11 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'model_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   DESCRIPTOR._loaded_options = None
   _globals['_IMAGEREQUEST']._serialized_start=15
-  _globals['_IMAGEREQUEST']._serialized_end=52
-  _globals['_IMAGERESPONSE']._serialized_start=54
-  _globals['_IMAGERESPONSE']._serialized_end=115
-  _globals['_IMAGEPROCESSOR']._serialized_start=117
-  _globals['_IMAGEPROCESSOR']._serialized_end=180
+  _globals['_IMAGEREQUEST']._serialized_end=56
+  _globals['_DICTIONARYENTRY']._serialized_start=58
+  _globals['_DICTIONARYENTRY']._serialized_end=135
+  _globals['_IMAGERESPONSE']._serialized_start=137
+  _globals['_IMAGERESPONSE']._serialized_end=187
+  _globals['_IMAGEPROCESSOR']._serialized_start=189
+  _globals['_IMAGEPROCESSOR']._serialized_end=252
 # @@protoc_insertion_point(module_scope)

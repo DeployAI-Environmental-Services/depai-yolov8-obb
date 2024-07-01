@@ -108,7 +108,7 @@ docker build . -t object-detection:v0.1
 - Create a container from the built image
 
 ```powershell
-docker run --name=test -p 8061:8061 object-detection:v0.1
+docker run --name=test -v ./test-data:/data -p 8061:8061 object-detection:v0.1
 ```
 
 - Run the pytest
@@ -138,9 +138,6 @@ docker pull ghcr.io/albughdadim/depai-yolov8-obb:v0.1
 ```powershell
 docker run --name=test -p 8061:8061 ghcr.io/albughdadim/depai-yolov8-obb:v0.1
 ```
-
-> [!WARNING]  
-> The current implementation receives the input from S3 cloud storage and sends the output to S3 cloud storage. For input, this makes more sense to avoid sending large image (in bytes) to the service. This is also more adequate for cloud environments. This current implementation uses an EWC bucket. Please don't distribute this code to avoid exposing the credentials. This will be replaced from cloud resources of the DeployAI project.
 
 ## How TO Use Example
 
