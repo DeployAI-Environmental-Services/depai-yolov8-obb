@@ -87,7 +87,6 @@ def test_process_image(grpc_stub):  # pylint: disable=W0621
             ]
         )
     )
-    print("THIS IS", response)
     assert response.entries[0].processed is not None
     assert response.entries[1].processed is not None
     print("Output file: " + response.entries[0].result_path)

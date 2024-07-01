@@ -153,42 +153,22 @@ def run():
     # As we can see, the model accepts multiple images in a list
     response = stub.ProcessImage(
         model_pb2.ImageRequest(  # pylint: disable=E1101
-            input_s3_uris=[
-                "s3://MoBucket/obj-det/patch_250.tif",
-                "s3://MoBucket/obj-det/patch_420.tif",
+            input_image_paths=[
+                "/data/patch_250.tif",
+                "/data/patch_420.tif",
             ]
         )
     )
-    # There are two outputs, the URI, which is the location of the output on S3 and the URL, which is a signed URL to download the output directly without having access to the bucket
-    print("Output S3 URI: " + response.output_s3_uri)
-    print("Output S3 URL: " + response.output_s3_url)
+    print("Output Result Path: " + response.entries[0].result_path)
+    print("Output Result Path: " + response.entries[1].result_path)
 
 
 if __name__ == "__main__":
     run()
 ```
 
-The output file looks like this
-
-```json
-[
-   {
-      "image_uri":"s3://MoBucket/obj-det/patch_250.tif",
-      "processed":true,
-      "result_url":"https://object-store.os-api.cci1.ecmwf.int/MoBucket/df7bf521-6c7f-4d5d-9c53-ae1ee7d60dca/patch_250.txt?AWSAccessKeyId=e850aff0dd5749a0a8df9f909014049c&Signature=2Ipi65KTZN2ij7QTK1JRBlb0Ugc%3D&Expires=1718308170",
-      "result_uri":"s3://MoBucket/df7bf521-6c7f-4d5d-9c53-ae1ee7d60dca/patch_250.txt"
-   },
-   {
-      "image_uri":"s3://MoBucket/obj-det/patch_420.tif",
-      "processed":true,
-      "result_url":"https://object-store.os-api.cci1.ecmwf.int/MoBucket/df7bf521-6c7f-4d5d-9c53-ae1ee7d60dca/patch_420.txt?AWSAccessKeyId=e850aff0dd5749a0a8df9f909014049c&Signature=M2RHh4APNGS%2B7dj%2BltT8apgJDC0%3D&Expires=1718308171",
-      "result_uri":"s3://MoBucket/df7bf521-6c7f-4d5d-9c53-ae1ee7d60dca/patch_420.txt"
-   }
-]
-```
-
 This is a list that has the same length of the input one. In each element of the list, there is a dictinary with three keys:
 
-- `image_uri`: S3 location of the input image.
-- `result_url`: Signed URL of the results of the input image.
-- `result_uri`: S3 location of the results of the input image.
+- `image_path`: Input image path.
+- `processed`: Boolean to indicate if an image is procssed or not.
+- `result_path`: Output txt file containing bounding boxes of detected objects.
