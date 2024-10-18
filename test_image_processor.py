@@ -100,6 +100,8 @@ def test_process_image(grpc_stub):  # pylint: disable=W0621
                 "test-data", os.path.relpath(result_path, "/data")
             )
             print(local_result_path)
-            img_path = os.path.join("test-data", fname.split(".")[0] + ".tif")
-            output_path = os.path.join("test-data", fname.split(".")[0] + ".png")
+            img_path = os.path.join("test-data/uploads", fname.split(".")[0] + ".tif")
+            output_path = os.path.join(
+                "test-data/uploads", fname.split(".")[0] + ".png"
+            )
             visualize_annotations(img_path, local_result_path, output_path)
