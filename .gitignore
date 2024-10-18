@@ -63,7 +63,8 @@ docs/_build/
 data
 
 # Ignore all subfolders inside folder
-test-data/*/
+test-data/*
+!test-data/**/uploads/
 
 test-shared/
 test-shared-volume/
