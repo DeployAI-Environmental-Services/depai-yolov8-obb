@@ -82,8 +82,8 @@ def test_process_image(grpc_stub):  # pylint: disable=W0621
     response = grpc_stub.ProcessImage(
         model_pb2.ImageRequest(  # pylint: disable=E1101
             input_image_paths=[
-                "/data/uploads/patch_250.tif",
-                "/data/uploads/patch_420.tif",
+                "/data/uploads/patch_193.tif",
+                "/data/uploads/patch_216.tif",
             ]
         )
     )
