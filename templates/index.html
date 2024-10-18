@@ -4,62 +4,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File Upload</title>
+    <title>Satellite Image Object Detection</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f1f5;
             margin: 0;
-            padding: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 300px;
+            background-color: #ffffff;
+            color: #333;
+            padding: 20px;
+            box-shadow: 2px 0 12px rgba(0, 0, 0, 0.1);
+            border-right: 1px solid #e4e4e4;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            height: 100vh;
         }
 
-        .upload-container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            width: 400px;
-            /* Increased width */
-            margin-bottom: 20px;
-            /* Space below the upload container */
-        }
-
-        h1 {
+        /* Sidebar Heading */
+        .sidebar h1 {
             font-size: 24px;
             margin-bottom: 20px;
-            color: #333;
+            text-align: center;
+            color: #444;
         }
 
-        input[type="file"] {
-            padding: 10px;
-            margin-bottom: 20px;
+        /* Upload Section */
+        .upload-section {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .upload-section input[type="file"] {
+            padding: 12px;
+            margin-bottom: 10px;
             display: block;
-            margin-left: auto;
-            margin-right: auto;
+            width: 80%;
+            max-width: 250px;
+            font-size: 15px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
         }
 
-        input[type="submit"] {
-            padding: 10px 20px;
-            background-color: #4CAF50;
+        .upload-section input[type="submit"] {
+            padding: 12px 20px;
+            background-color: #6c757d;
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
             font-size: 16px;
+            margin-top: 10px;
+            transition: background-color 0.3s ease;
         }
 
-        input[type="submit"]:hover {
-            background-color: #45a049;
+        .upload-section input[type="submit"]:hover {
+            background-color: #5a6268;
         }
 
+        /* Message Styles */
         .message {
+            text-align: center;
             margin-top: 20px;
-            color: #333;
         }
 
         .message ul {
@@ -68,9 +87,10 @@
         }
 
         .message li {
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 4px;
+            padding: 12px;
+            margin-bottom: 12px;
+            border-radius: 6px;
+            font-size: 14px;
         }
 
         .success {
@@ -85,53 +105,243 @@
             border: 1px solid #f5c6cb;
         }
 
+        /* Object Detection Description */
+        .object-detection {
+            flex-grow: 1;
+            /* Allow it to grow and take available space */
+            overflow-y: auto;
+            /* Enable scrolling */
+            max-height: calc(100vh - 300px);
+            /* Set max height to fit the sidebar */
+        }
+
+        .object-detection h3 {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+
+        .object-detection ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            text-align: left;
+        }
+
+        .object-detection li {
+            font-size: 14px;
+            padding: 2px;
+            margin: 5px 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .object-detection li .color-box {
+            width: 15px;
+            height: 15px;
+            border-radius: 3px;
+            margin-right: 10px;
+        }
+
+        /* Color Classes */
+        .plane .color-box {
+            background-color: red;
+        }
+
+        .ship .color-box {
+            background-color: gray;
+        }
+
+        .storage-tank .color-box {
+            background-color: green;
+        }
+
+        .baseball-diamond .color-box {
+            background-color: yellow;
+        }
+
+        .tennis-court .color-box {
+            background-color: cyan;
+        }
+
+        .basketball-court .color-box {
+            background-color: magenta;
+        }
+
+        .ground-track-field .color-box {
+            background-color: orange;
+        }
+
+        .harbor .color-box {
+            background-color: purple;
+        }
+
+        .bridge .color-box {
+            background-color: pink;
+        }
+
+        .large-vehicle .color-box {
+            background-color: brown;
+        }
+
+        .small-vehicle .color-box {
+            background-color: blue;
+        }
+
+        .helicopter .color-box {
+            background-color: lime;
+        }
+
+        .roundabout .color-box {
+            background-color: navy;
+        }
+
+        .soccer-ball-field .color-box {
+            background-color: teal;
+        }
+
+        .swimming-pool .color-box {
+            background-color: gold;
+        }
+
+        .container-crane .color-box {
+            background-color: olive;
+        }
+
+        .airport .color-box {
+            background-color: indigo;
+        }
+
+        .helipad .color-box {
+            background-color: black;
+        }
+
+        /* Map Container */
         .map-container {
-            width: 100%;
-            /* Make the map container full width */
-            height: calc(100vh - 200px);
-            /* Adjust height to fill remaining space */
-            margin-top: 20px;
-            /* Add space above the map */
+            flex-grow: 1;
+            height: 100vh;
+            background-color: #fafafa;
+            position: relative;
+            padding: 20px;
         }
 
         iframe {
             width: 100%;
-            /* Make the iframe full width */
             height: 100%;
-            /* Make the iframe full height */
             border: none;
-            /* Remove border */
+            border-radius: 6px;
         }
     </style>
 </head>
 
 <body>
-    <div class="upload-container">
-        <h1>Upload a File</h1>
-        <form action="/upload" method="post" enctype="multipart/form-data">
-            <input type="file" name="file" multiple>
-            <input type="submit" value="Upload">
-        </form>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h1>Satellite Detection</h1>
 
-        {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
+        <!-- Upload Section -->
+        <div class="upload-section">
+            <form action="/upload" method="post" enctype="multipart/form-data">
+                <input type="file" name="file" multiple accept="image/*" required>
+                <input type="submit" value="Upload Images">
+            </form>
+        </div>
+
+        <!-- Message Section -->
         <div class="message">
             <ul>
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
                 {% for category, message in messages %}
                 <li class="{{ category }}">{{ message }}</li>
                 {% endfor %}
+                {% endif %}
+                {% endwith %}
             </ul>
         </div>
-        {% endif %}
-        {% endwith %}
+
+        <!-- Object Detection Description -->
+        <div class="object-detection">
+            <h3>Detected Classes</h3>
+            <ul>
+                <li class="plane">
+                    <div class="color-box"></div> Plane
+                </li>
+                <li class="ship">
+                    <div class="color-box"></div> Ship
+                </li>
+                <li class="storage-tank">
+                    <div class="color-box"></div> Storage Tank
+                </li>
+                <li class="baseball-diamond">
+                    <div class="color-box"></div> Baseball Diamond
+                </li>
+                <li class="tennis-court">
+                    <div class="color-box"></div> Tennis Court
+                </li>
+                <li class="basketball-court">
+                    <div class="color-box"></div> Basketball Court
+                </li>
+                <li class="ground-track-field">
+                    <div class="color-box"></div> Ground Track Field
+                </li>
+                <li class="harbor">
+                    <div class="color-box"></div> Harbor
+                </li>
+                <li class="bridge">
+                    <div class="color-box"></div> Bridge
+                </li>
+                <li class="large-vehicle">
+                    <div class="color-box"></div> Large Vehicle
+                </li>
+                <li class="small-vehicle">
+                    <div class="color-box"></div> Small Vehicle
+                </li>
+                <li class="helicopter">
+                    <div class="color-box"></div> Helicopter
+                </li>
+                <li class="roundabout">
+                    <div class="color-box"></div> Roundabout
+                </li>
+                <li class="soccer-ball-field">
+                    <div class="color-box"></div> Soccer Ball Field
+                </li>
+                <li class="swimming-pool">
+                    <div class="color-box"></div> Swimming Pool
+                </li>
+                <li class="container-crane">
+                    <div class="color-box"></div> Container Crane
+                </li>
+                <li class="airport">
+                    <div class="color-box"></div> Airport
+                </li>
+                <li class="helipad">
+                    <div class="color-box"></div> Helipad
+                </li>
+            </ul>
+        </div>
+
+        <!-- Download Section -->
+        <div class="download-link">
+            {% if zip_path %}
+            <a href="{{ zip_path }}" download
+                style="display: block; margin-top: 20px; text-align: center; background-color: #5c85d6; color: white; padding: 10px 20px; border-radius: 6px; text-decoration: none;">Download
+                Processed Files</a>
+            {% else %}
+            <p style="margin-top: 20px; text-align: center;">No files available for download.</p>
+            {% endif %}
+        </div>
     </div>
 
-    {% if map_path %}
+    <!-- Map Container -->
     <div class="map-container">
-        <h2>Map View</h2>
-        <iframe src="{{ map_path }}" title="Uploaded Map"></iframe>
+        {% if map_path %}
+        <iframe src="{{ map_path }}"></iframe>
+        {% else %}
+        <p style="text-align: center; margin-top: 20px;">Map not available.</p>
+        {% endif %}
     </div>
-    {% endif %}
 </body>
 
 </html>

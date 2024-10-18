@@ -1,7 +1,17 @@
 import os
+import zipfile
 import grpc
 import logging
-from flask import Flask, render_template, request, redirect, session, url_for, flash
+from flask import (
+    Flask,
+    render_template,
+    request,
+    redirect,
+    send_file,
+    session,
+    url_for,
+    flash,
+)
 from model_pb2_grpc import ImageProcessorStub
 from model_pb2 import ImageRequest  # pylint:disable=E0611
 from visualize_annotations import visualize_on_map
@@ -13,7 +23,7 @@ stub = ImageProcessorStub(channel)
 app = Flask(__name__, static_folder="/data")
 app.secret_key = "7038c774900b84f40f6cae8927187da2"
 app.config["UPLOAD_FOLDER"] = os.path.join(data_dir, "uploads/")
-app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024  # Max file size: 16MB
+app.config["MAX_CONTENT_LENGTH"] = 60 * 1024 * 1024  # Max file size: 16MB
 
 
 os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
@@ -28,7 +38,15 @@ def allowed_file(filename):
 @app.route("/")
 def index():
     map_path = session.get("map_path")  # Retrieve single map path from session
-    return render_template("index.html", map_path=map_path)
+    zip_path = session.get("zip_path")  # Retrieve the zip file path from session
+    return render_template("index.html", map_path=map_path, zip_path=zip_path)
+
+
+@app.route("/download/<filename>")
+def download_file(filename):
+    # Serve the zip file for download
+    zip_filepath = os.path.join(os.path.dirname(app.config["UPLOAD_FOLDER"]), filename)
+    return send_file(zip_filepath, as_attachment=True)
 
 
 @app.route("/upload", methods=["POST"])
@@ -59,13 +77,8 @@ def upload_file():
 
     if file_paths:
         try:
-            response = process_images_via_grpc(
-                file_paths
-            )  # Send the list of file paths to gRPC service
-            flash(
-                f"Processing results: {response.entries}", "success"
-            )  # Adjust according to your response structure
-            # Generate maps based on the processing results
+            response = process_images_via_grpc(file_paths)
+            # flash(f"Processing results: {response.entries}", "success")
             list_img_paths = []  # Store paths of generated maps
             list_annotation_paths = []
             if response.entries:
@@ -78,12 +91,18 @@ def upload_file():
                 output_map_path = os.path.join(
                     os.path.dirname(annotation_path), "map_viz.html"
                 )
-                logging.info(list_img_paths)
-                logging.info(list_annotation_paths)
+                zip_filename = "processed_files.zip"
+                zip_filepath = os.path.join(
+                    os.path.dirname(annotation_path), zip_filename
+                )
+                with zipfile.ZipFile(zip_filepath, "w") as zipf:
+                    for file in list_annotation_paths:
+                        zipf.write(file, os.path.basename(file))
                 visualize_on_map(list_img_paths, list_annotation_paths, output_map_path)
                 # Provide the paths to the generated maps in the response
                 flash("Processing complete. Check the generated maps.", "success")
                 session["map_path"] = output_map_path
+                session["zip_path"] = zip_filepath
                 return redirect(url_for("index"))
         except Exception as e:
             flash(f"Error during processing: {str(e)}", "error")
