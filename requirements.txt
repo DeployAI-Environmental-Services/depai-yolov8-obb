@@ -2,8 +2,15 @@ grpcio
 grpcio-tools
 numpy==1.26.4
 ultralytics==8.1.5
-torch==2.1.2
-torchvision==0.16.2
+torch==2.2.0
+torchvision==0.17.0
 transformers==4.37.0
 dill==0.3.8
+flask==3.0.3
 pytest
+pylance
+pylint
+black
+flake8
+folium==0.17.0
+geopandas==1.0.1

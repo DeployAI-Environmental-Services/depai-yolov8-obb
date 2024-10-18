@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .upload-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 400px;
+            /* Increased width */
+            margin-bottom: 20px;
+            /* Space below the upload container */
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        input[type="file"] {
+            padding: 10px;
+            margin-bottom: 20px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        input[type="submit"] {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        .message {
+            margin-top: 20px;
+            color: #333;
+        }
+
+        .message ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .message li {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .map-container {
+            width: 100%;
+            /* Make the map container full width */
+            height: calc(100vh - 200px);
+            /* Adjust height to fill remaining space */
+            margin-top: 20px;
+            /* Add space above the map */
+        }
+
+        iframe {
+            width: 100%;
+            /* Make the iframe full width */
+            height: 100%;
+            /* Make the iframe full height */
+            border: none;
+            /* Remove border */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="upload-container">
+        <h1>Upload a File</h1>
+        <form action="/upload" method="post" enctype="multipart/form-data">
+            <input type="file" name="file" multiple>
+            <input type="submit" value="Upload">
+        </form>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="message">
+            <ul>
+                {% for category, message in messages %}
+                <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+        {% endwith %}
+    </div>
+
+    {% if map_path %}
+    <div class="map-container">
+        <h2>Map View</h2>
+        <iframe src="{{ map_path }}" title="Uploaded Map"></iframe>
+    </div>
+    {% endif %}
+</body>
+
+</html>

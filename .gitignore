@@ -64,3 +64,6 @@ data
 
 # Ignore all subfolders inside folder
 test-data/*/
+
+test-shared/
+test-shared-volume/

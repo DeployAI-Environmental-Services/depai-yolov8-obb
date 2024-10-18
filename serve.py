@@ -1,7 +1,8 @@
 from concurrent import futures
-import time
+import threading
 import logging
 import grpc
+from upload import app_run
 import model_pb2
 import model_pb2_grpc
 from app.inference import detect_yolov8_obb
@@ -11,12 +12,14 @@ logging.getLogger().setLevel(logging.INFO)
 
 class ImageProcessorServicer(model_pb2_grpc.ImageProcessorServicer):
     def ProcessImage(self, request, context):
-        input_image_paths = request.input_image_paths
-        result = self.run_model(input_image_paths)
+        print(request)
+        input_image_path = request.input_image_paths
+        result = self.run_model(input_image_path)
         return model_pb2.ImageResponse(entries=result)  # pylint: disable=E1101
 
-    def run_model(self, input_s3_uri):
-        result = detect_yolov8_obb(input_s3_uri)
+    def run_model(self, input_image_path):
+        # Pass the image path to your model inference function
+        result = detect_yolov8_obb(input_image_path)
         return result
 
 
@@ -27,11 +30,8 @@ def serve():
     )
     server.add_insecure_port("[::]:8061")
     server.start()
-    try:
-        while True:
-            time.sleep(86400)
-    except KeyboardInterrupt:
-        server.stop(0)
+    threading.Thread(target=app_run).start()
+    server.wait_for_termination()
 
 
 if __name__ == "__main__":
