@@ -1,7 +1,6 @@
 import os
 import zipfile
 import grpc
-import logging
 from flask import (
     Flask,
     render_template,
@@ -13,7 +12,7 @@ from flask import (
     flash,
 )
 from model_pb2_grpc import ImageProcessorStub
-from model_pb2 import ImageRequest  # pylint:disable=E0611
+from model_pb2 import ImageRequest  # type: ignore # pylint:disable=E0611
 from visualize_annotations import visualize_on_map
 
 
@@ -22,7 +21,7 @@ channel = grpc.insecure_channel("localhost:8061")
 stub = ImageProcessorStub(channel)
 app = Flask(__name__, static_folder="/data")
 app.secret_key = "7038c774900b84f40f6cae8927187da2"
-app.config["UPLOAD_FOLDER"] = os.path.join(data_dir, "uploads/")
+app.config["UPLOAD_FOLDER"] = os.path.join(data_dir, "uploads/")  # type: ignore
 app.config["MAX_CONTENT_LENGTH"] = 60 * 1024 * 1024  # Max file size: 16MB
 
 
@@ -69,7 +68,7 @@ def upload_file():
 
         if allowed_file(file.filename):
             filename = file.filename
-            file_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+            file_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)  # type: ignore
             file.save(file_path)
             file_paths.append(file_path)
         else:

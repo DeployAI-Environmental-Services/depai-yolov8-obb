@@ -1,6 +1,6 @@
 # DeployAI Object Detection
 
-This repository contains a deep learning model for detecting objects from very high resolution optical remote sensing images using `YOLOv8 Oriented Bounding Box`.
+This repository contains a deep learning model for detecting objects from very high resolution optical remote sensing images using `YOLOv8 Oriented Bounding Box`, which is served using a web interface using `Flask`.
 
 ## Key features
 
@@ -29,9 +29,15 @@ The model allows detecting the following objects
 }
 ```
 
+![Webapp obb](imgs/obb-web-sample.png)
+
+1. Navigate to the satellite-od-model web UI and upload the aerial or high-resolution satellite images.
+2. Once the processing is completed, you can find the bounding boxes overlayed on the input images with classes of objects detected.
+3. Results and intermittent files are stored in the shared folder.
+
 ## Input Format
 
-The input image should be of size $1024\times1024\times3$, which means RGB images. The image extension can be `tif, png, and jpg`.
+The input image should be of size $1024\times1024\times3$, which means RGB images. The image extension can be `tif`. Via the webapp, the user can upload multiple images, where objects will be detected by the model. After prediction termination, the user can download the results from the webapp as a compressed file.
 
 ## Output Format
 
@@ -52,7 +58,7 @@ The output is a text file that contains one or multiple lines. Each line is asso
 10 0.989942 0.247576 0.999541 0.251096 1.00361 0.240008 0.994008 0.236487 0.27634
 ```
 
-> [!IMPORTANT]  
+> [!IMPORTANT]
 > If no objects are detected for an image, no output file is produced.
 
 ## Repository Content
@@ -108,7 +114,7 @@ docker build . -t object-detection:v0.1
 - Create a container from the built image
 
 ```powershell
-docker run --name=test -v ./test-data:/data -p 8061:8061 object-detection:v0.1
+docker run --name=test -v ./test-data:/data --env SHARED_FOLDER_PATH=/data -p 8061:8061 -p 8062:8062 object-detection:v0.1
 ```
 
 - Run the pytest
@@ -124,11 +130,11 @@ pytest test_image_processor.py
 - In a terminal, login to container registry using
 
 ```powershell
-docker login ghcr.io -u USERNAME -p PAT 
+docker login ghcr.io -u USERNAME -p PAT
 ```
 
 - Pull the image
-  
+
 ```powershell
 docker pull ghcr.io/albughdadim/depai-yolov8-obb:v0.1
 ```
@@ -136,7 +142,7 @@ docker pull ghcr.io/albughdadim/depai-yolov8-obb:v0.1
 - Create a container
 
 ```powershell
-docker run --name=test -p 8061:8061 ghcr.io/albughdadim/depai-yolov8-obb:v0.1
+docker run --name=test -v ./test-data:/data --env SHARED_FOLDER_PATH=/data -p 8061:8061 -p 8062:8062 ghcr.io/albughdadim/depai-yolov8-obb:v0.1
 ```
 
 ## How TO Use Example
