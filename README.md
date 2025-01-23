@@ -145,7 +145,7 @@ docker pull ghcr.io/albughdadim/depai-yolov8-obb:v0.1
 docker run --name=test -v ./test-data:/data --env SHARED_FOLDER_PATH=/data -p 8061:8061 -p 8062:8062 ghcr.io/albughdadim/depai-yolov8-obb:v0.1
 ```
 
-## How TO Use Example
+## How TO Use The Model Without GUI
 
 ```python
 import grpc
